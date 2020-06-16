@@ -65,6 +65,7 @@ echo $val
 echo $TMPDIR
 
 source activate $HOME/s2p_env/envs
+conda env export > job_%j_env.yml
 suite2p_runner --tmp $TMPDIR --ops {ops_path} --db {db_path}
 """
 

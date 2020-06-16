@@ -65,6 +65,7 @@ echo $val
 echo $TMPDIR
 
 source activate caiman_37
+conda env export > job_%j_env.yml
 xvfb-run --server-args='-screen 0 1024x768x24' -a python -W ignore caiman_runner
 suite2p_runner --tmp $TMPDIR --ops {ops_path} --db {db_path}
 """
