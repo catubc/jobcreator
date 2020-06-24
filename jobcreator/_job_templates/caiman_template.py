@@ -5,12 +5,10 @@ def caiman_job_file(
     data_path: str,
     job_name: str,
     email: str,
-    ops_path: str = None,
-    db_path: str = None,
     n_cpu: int = 8,
     mem_per_cpu: int = 25,
-    tmp_size: int = 50,
-    job_time: str = "01:00:00",
+    tmp_size: int = 150,
+    job_time: str = "04:00:00",
     qos: str = "6hours",
     log_file: str = "myrun.o",
     error_file: str = "myrun.e",
@@ -21,12 +19,6 @@ def caiman_job_file(
     # get the name of the file and make the path to the temp dir
     file_name = os.path.basename(data_path)
     temp_data_path = os.path.join("$TMPDIR", file_name)
-
-    if ops_path is None:
-        ops_path = "[]"
-
-    if db_path is None:
-        db_path = "[]"
 
     job_file = f"""#!/bin/bash
 
@@ -58,16 +50,18 @@ module load Anaconda3
 
 #add your command lines below
 #############################
-mkdir $TMPDIR/fd
-cp {data_path} {temp_data_path}
-val=$(ls $TMPDIR)
-echo $val
-echo $TMPDIR
+echo "moving files"
+for file in *.tif; do cp "$file" $TMP;done
 
+echo "analysis"
 source activate caiman_37
 conda env export > job_%j_env.yml
-xvfb-run --server-args='-screen 0 1024x768x24' -a python -W ignore caiman_runner
-suite2p_runner --tmp $TMPDIR --ops {ops_path} --db {db_path}
+
+caiman_runner --file $TMP --ncpus {n_cpu}
+
+mkdir results
+for file in $TMP/*.mmap; do cp "$file" ./results;done
+for file in $TMP/*.hdf5; do cp "$file" ./results;done
 """
 
     return job_file

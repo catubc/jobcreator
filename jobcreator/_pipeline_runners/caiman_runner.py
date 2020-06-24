@@ -10,7 +10,7 @@ import numpy as np
 def parse_args():
     parser = argparse.ArgumentParser(description="Suite2p parameters")
     parser.add_argument("--file", default=[], type=str, help="options")
-    parser.add_argument("--ncpus", default=[], type=int, help="options")
+    parser.add_argument("--ncpus", default=1, type=int, help="options")
     args = parser.parse_args()
 
     file_path = args.file
@@ -196,7 +196,7 @@ def run(file_path, n_cpus):
     cm.stop_server(dview=dview)
 
 
-if __name__ == "__main__":
+def main():
     file_path, n_cpus = parse_args()
 
     # run the pipeline

@@ -50,7 +50,7 @@ def update_paths(ops_path, db_path, tmp_path, file_name):
     return ops, db
 
 
-if __name__ == "__main__":
+def main():
     ops_path, db_path, tmp_path, file_name = parse_args()
     ops, db = update_paths(ops_path, db_path, tmp_path, file_name)
 
@@ -62,4 +62,4 @@ if __name__ == "__main__":
     from suite2p import run_s2p
 
     # run the pipeline
-    opsEnd = run_s2p.run_s2p(ops=ops, db=db)
+    _ = run_s2p.run_s2p(ops=ops, db=db)
