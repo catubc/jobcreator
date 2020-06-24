@@ -17,6 +17,12 @@ setup(
     url="https://github.com/donatolab/jobcreator",
     license="GPL",
     packages=find_packages(),
-    entry_points={"console_scripts": ["jobcreator=jobcreator.__main__:main"],},
+    entry_points={
+        "console_scripts": [
+            "jobcreator=jobcreator.__main__:main",
+            "suite2p_runner=jobcreator._pipeline_runners.suite2p_runner:main",
+            "caiman_runner=jobcreator._pipeline_runners.caiman_runner:main",
+        ]
+    },
     zip_safe=False,
 )
