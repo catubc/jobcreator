@@ -18,18 +18,25 @@ def parse_args():
 
     pipeline_name = args.pipeline
     settings_path = args.settings
-    output_path = args.output
+    output_dir = args.output
 
-    return pipeline_name, settings_path, output_path
+    return pipeline_name, settings_path, output_dir
 
 
 def main():
-    pipeline_name, settings_path, output_path = parse_args()
+    pipeline_name, settings_path, output_dir = parse_args()
 
-    job_file_path = os.path.join(output_path, "job_file.sh")
+    # make the output directory if it doesn't exist
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    job_file_path = os.path.join(output_dir, "job_file.sh")
 
     with open(settings_path, "r") as read_file:
         job_settings = json.load(read_file)
+
+    # add the output directory to the job file settings
+    job_settings["jobcreator_output_dir"] = output_dir
 
     # get the file text
     job_file_gen = JOB_FILE_GENERATORS[pipeline_name]

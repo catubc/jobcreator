@@ -3,6 +3,7 @@ import os
 
 def caiman_job_file(
     data_path: str,
+    jobcreator_output_dir: str,
     job_name: str,
     email: str,
     n_cpu: int = 8,
@@ -59,9 +60,8 @@ conda env export > job_%j_env.yml
 
 caiman_runner --file $TMP --ncpus {n_cpu}
 
-mkdir results
-for file in $TMP/*.mmap; do cp "$file" ./results;done
-for file in $TMP/*.hdf5; do cp "$file" ./results;done
+for file in $TMP/*.mmap; do cp "$file" {jobcreator_output_dir};done
+for file in $TMP/*.hdf5; do cp "$file" {jobcreator_output_dir};done
 """
 
     return job_file
