@@ -18,8 +18,7 @@ def caiman_job_file(
     tmp_size = str(tmp_size) + "G"
 
     # get the name of the file and make the path to the temp dir
-    file_name = os.path.basename(data_path)
-    temp_data_path = os.path.join("$TMPDIR", file_name)
+    data_pattern = os.path.join(data_path, "*.tif")
 
     job_file = f"""#!/bin/bash
 
@@ -52,7 +51,7 @@ module load Anaconda3
 #add your command lines below
 #############################
 echo "moving files"
-for file in *.tif; do cp "$file" $TMP;done
+for file in {data_pattern}; do cp "$file" $TMP;done
 
 echo "analysis"
 source activate caiman_37
