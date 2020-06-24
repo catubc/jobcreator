@@ -59,7 +59,7 @@ for file in {data_pattern}; do cp "$file" $TMP;done
 
 echo "analysis"
 source activate caiman_37
-conda env export > job_%j_env.yml
+conda env export > job_$SLURM_JOBID_env.yml
 
 caiman_runner --file $TMP --ncpus {n_cpu}
 
