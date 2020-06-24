@@ -1,6 +1,7 @@
 import os
 
 from setuptools import find_packages, setup
+import versioneer
 
 install_requires = [
     line.rstrip()
@@ -10,7 +11,8 @@ install_requires = [
 setup(
     name="jobcreator",
     install_requires=install_requires,
-    version="0.0.1",
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     description="Imaging database and storage",
     url="https://github.com/donatolab/jobcreator",
     license="MIT",
