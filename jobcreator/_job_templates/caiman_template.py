@@ -2,31 +2,31 @@ import os
 
 
 def caiman_job_file(
-        data_path: str,
-        job_name: str,
-        email: str,
-        ops_path: str = None,
-        db_path: str = None,
-        n_cpu: int = 8,
-        mem_per_cpu: int = 25,
-        tmp_size: int = 50,
-        job_time: str = '01:00:00',
-        qos:str='6hours',
-        log_file: str = 'myrun.o',
-        error_file: str ='myrun.e'
+    data_path: str,
+    job_name: str,
+    email: str,
+    ops_path: str = None,
+    db_path: str = None,
+    n_cpu: int = 8,
+    mem_per_cpu: int = 25,
+    tmp_size: int = 50,
+    job_time: str = "01:00:00",
+    qos: str = "6hours",
+    log_file: str = "myrun.o",
+    error_file: str = "myrun.e",
 ):
-    mem_per_cpu = str(mem_per_cpu) + 'G'
-    tmp_size = str(tmp_size) + 'G'
+    mem_per_cpu = str(mem_per_cpu) + "G"
+    tmp_size = str(tmp_size) + "G"
 
     # get the name of the file and make the path to the temp dir
     file_name = os.path.basename(data_path)
-    temp_data_path = os.path.join('$TMPDIR', file_name)
+    temp_data_path = os.path.join("$TMPDIR", file_name)
 
     if ops_path is None:
-        ops_path = '[]'
+        ops_path = "[]"
 
     if db_path is None:
-        db_path = '[]'
+        db_path = "[]"
 
     job_file = f"""#!/bin/bash
 

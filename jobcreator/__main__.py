@@ -5,17 +5,14 @@ import subprocess
 
 from ._job_templates import suite2p_job_file, caiman_job_file
 
-JOB_FILE_GENERATORS = {
-    'suite2p': suite2p_job_file,
-    'caiman': caiman_job_file
-}
+JOB_FILE_GENERATORS = {"suite2p": suite2p_job_file, "caiman": caiman_job_file}
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Pipeline parameters')
-    parser.add_argument('--pipeline', default=[], type=str, help='options')
-    parser.add_argument('--settings', default=[], type=str, help='options')
-    parser.add_argument('--output', default='.', type=str, help='options')
+    parser = argparse.ArgumentParser(description="Pipeline parameters")
+    parser.add_argument("--pipeline", default=[], type=str, help="options")
+    parser.add_argument("--settings", default=[], type=str, help="options")
+    parser.add_argument("--output", default=".", type=str, help="options")
 
     args = parser.parse_args()
 
@@ -29,7 +26,7 @@ def parse_args():
 def main():
     pipeline_name, settings_path, output_path = parse_args()
 
-    job_file_path = os.path.join(output_path, 'job_file.sh')
+    job_file_path = os.path.join(output_path, "job_file.sh")
 
     with open(settings_path, "r") as read_file:
         job_settings = json.load(read_file)
@@ -43,4 +40,4 @@ def main():
         text_file.write(job_file_text)
 
     # run the job
-    subprocess.run(['srun', job_file_path])
+    subprocess.run(["srun", job_file_path])

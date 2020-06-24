@@ -9,4 +9,5 @@ repos:
     hooks:
     - id: flake8
       pass_filenames: true
+      args: ["--max-line-length", "88"]
       exclude: vendored|__init__.py|examples|setup.py|_job_templates
