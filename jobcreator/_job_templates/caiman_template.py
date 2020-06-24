@@ -24,6 +24,9 @@ def caiman_job_file(
     log_file = os.path.join(jobcreator_output_dir, log_file)
     error_file = os.path.join(jobcreator_output_dir, error_file)
 
+    # stub for naming the environment file
+    env_file_stub = os.path.join(jobcreator_output_dir, "job_")
+
     job_file = f"""#!/bin/bash
 
 #SBATCH --job-name={job_name}                   #This is the name of your job
@@ -59,7 +62,7 @@ for file in {data_pattern}; do cp "$file" $TMP;done
 
 echo "analysis"
 source activate caiman_37
-conda env export > job_$SLURM_JOBID_env.yml
+conda env export > {env_file_stub}$SLURM_JOBID_env.yml
 
 caiman_runner --file $TMP --ncpus {n_cpu}
 
