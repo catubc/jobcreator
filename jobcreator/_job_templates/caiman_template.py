@@ -61,7 +61,7 @@ echo "moving files"
 for file in {data_pattern}; do cp "$file" $TMP;done
 
 echo "analysis"
-source activate caiman_37
+source activate caiman
 conda env export > {env_file_stub}$SLURM_JOBID_env.yml
 
 caiman_runner --file $TMP --ncpus {n_cpu}
