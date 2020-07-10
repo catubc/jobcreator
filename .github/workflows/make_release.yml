@@ -23,7 +23,6 @@ jobs:
           python -m pip install check-manifest pep517
       - name: Build Distribution
         run: |
-          # check-manifest  # https://github.com/mgedmin/check-manifest
           python -m pep517.build .
       - name: Create Release
         id: create_release
