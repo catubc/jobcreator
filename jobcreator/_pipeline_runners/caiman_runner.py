@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import argparse
 import glob
-import json
 import os
+import pickle
 from time import sleep
 
 import numpy as np
@@ -163,8 +163,8 @@ def run(
 
     # save the parameters
     final_params = cnm.params.to_dict()
-    with open("all_caiman_parameters.json", "w") as fp:
-        json.dump(final_params, fp)
+    with open("all_caiman_parameters.pkl", "w") as fp:
+        pickle.dump(final_params, fp)
 
     print("stopping server")
     cm.stop_server(dview=dview)
