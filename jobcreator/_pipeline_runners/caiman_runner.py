@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import argparse
 import glob
+import json
 import os
 from time import sleep
 
@@ -157,7 +158,13 @@ def run(
     cnm.params.set("quality", qc_parameters)
     cnm.estimates.evaluate_components(images, cnm.params, dview=dview)
 
+    print("saving results")
     cnm.save(cnm.mmap_file[:-4] + "hdf5")
+
+    # save the parameters
+    final_params = cnm.params.to_dict()
+    with open("all_caiman_parameters.json", "w") as fp:
+        json.dump(final_params, fp)
 
     print("stopping server")
     cm.stop_server(dview=dview)

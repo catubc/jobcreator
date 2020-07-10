@@ -71,6 +71,7 @@ caiman_runner --file $TMP --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnm
 
 for file in $TMP/*.mmap; do cp "$file" {jobcreator_output_dir};done
 for file in $TMP/*.hdf5; do cp "$file" {jobcreator_output_dir};done
+for file in $TMP/*.json; do cp "$file" {jobcreator_output_dir};done
 """
 
     return job_file
