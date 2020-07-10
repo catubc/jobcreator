@@ -165,7 +165,7 @@ def run(
     final_params = cnm.params.to_dict()
     path_base = os.path.dirname(cnm.mmap_file)
     params_file = os.path.join(path_base, "all_caiman_parameters.pkl")
-    with open(params_file, "w") as fp:
+    with open(params_file, "wb") as fp:
         pickle.dump(final_params, fp)
 
     print("stopping server")
