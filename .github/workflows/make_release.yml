@@ -23,12 +23,7 @@ jobs:
           python -m pip install check-manifest pep517
       - name: Build Distribution
         run: |
-          python -m pep517.build
-          --source
-          --binary
-          --out-dir dist/
-          --source-dir .
-           
+          python -m pep517.build .
       - name: Create Release
         id: create_release
         uses: actions/create-release@latest
