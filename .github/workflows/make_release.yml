@@ -27,7 +27,7 @@ jobs:
           --source
           --binary
           --out-dir dist/
-          .
+          --source-dir .
            
       - name: Create Release
         id: create_release
