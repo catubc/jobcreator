@@ -161,9 +161,11 @@ def run(
     print("saving results")
     cnm.save(cnm.mmap_file[:-4] + "hdf5")
 
-    # save the parameters
+    # save the parameters in the same dir as the results
     final_params = cnm.params.to_dict()
-    with open("all_caiman_parameters.pkl", "w") as fp:
+    path_base = os.path.dirname(cnm.mmap_file)
+    params_file = os.path.join(path_base, "all_caiman_parameters.pkl")
+    with open(params_file, "w") as fp:
         pickle.dump(final_params, fp)
 
     print("stopping server")
