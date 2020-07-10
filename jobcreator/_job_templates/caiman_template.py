@@ -13,6 +13,9 @@ def caiman_job_file(
     qos: str = "6hours",
     log_file: str = "myrun.o",
     error_file: str = "myrun.e",
+    mc_settings_file: str = "default",
+    cnmf_settings_file: str = "default",
+    qc_settings_file: str = "default",
 ):
     mem_per_cpu = str(mem_per_cpu) + "G"
     tmp_size = str(tmp_size) + "G"
@@ -64,7 +67,7 @@ echo "analysis"
 source activate caiman
 conda env export > {env_file_stub}$SLURM_JOBID_env.yml
 
-caiman_runner --file $TMP --ncpus {n_cpu}
+caiman_runner --file $TMP --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file}
 
 for file in $TMP/*.mmap; do cp "$file" {jobcreator_output_dir};done
 for file in $TMP/*.hdf5; do cp "$file" {jobcreator_output_dir};done
