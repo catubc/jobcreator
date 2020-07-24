@@ -8,8 +8,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Suite2p parameters")
     parser.add_argument("--ops", default=[], type=str, help="options")
     parser.add_argument("--db", default=[], type=str, help="options")
-    parser.add_argument("--tmp", default=[], type=str, help="options")
-    parser.add_argument("--file", default=[], type=str, help="options")
+    parser.add_argument("--tmp", default="", type=str, help="options")
+    parser.add_argument("--file", default="", type=str, help="options")
     args = parser.parse_args()
 
     ops_path = args.ops
@@ -34,17 +34,18 @@ def update_paths(ops_path, db_path, tmp_path, file_name):
 
     # Modify the data path to the sciCORE job temp dir
     data_path = tmp_path
-    fd_path = os.path.join(tmp_path, "fd/")
-    # save_path = os.path.join(tmp_path, "suite2p/")
+    fd_path = os.path.join(tmp_path, "fd")
+    save_path = tmp_path
     print("data: %s \n fd: %s" % (data_path, fd_path))
 
     ops["batch_size"] = 4000
     ops["input_format"] = "h5"
 
     db["data_path"] = []
-    db["h5py"] = os.path.join(tmp_path, file_name)
+    db["h5py"] = file_name
     db["h5py_key"] = "MSession_0/MUnit_0/Channel_0"
-    # db['fast_disk'] = fd_path
+    db["fast_disk"] = fd_path
+    db["save_folder"] = save_path
     print(db)
 
     return ops, db

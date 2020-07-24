@@ -64,9 +64,14 @@ val=$(ls $TMPDIR)
 echo $val
 echo $TMPDIR
 
-source activate $HOME/s2p_env/envs
-conda env export > job_%j_env.yml
-suite2p_runner --tmp $TMPDIR --ops {ops_path} --db {db_path}
+source activate suite2p
+conda env export > job_$SLURM_JOBID_env.yml
+suite2p_runner --tmp $TMPDIR --ops {ops_path} --db {db_path} --file{temp_data_path}
+
+val=$(ls $TMPDIR)
+echo $val
+for file in $TMP/*.npy; do cp "$file" {jobcreator_output_dir};done
+
 """
 
     return job_file
