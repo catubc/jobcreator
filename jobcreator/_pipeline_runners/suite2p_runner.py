@@ -22,14 +22,14 @@ def parse_args():
 
 
 def update_paths(ops_path, db_path, tmp_path, file_name, data_key):
-    if ops_path == '[]':
+    if ops_path == "[]":
         from suite2p.run_s2p import default_ops
 
         ops = default_ops()
     else:
         ops = np.load(ops_path, allow_pickle=True).item()
 
-    if db_path == '[]':
+    if db_path == "[]":
         db = {}
     else:
         db = np.load(db_path, allow_pickle=True).item()
@@ -37,7 +37,6 @@ def update_paths(ops_path, db_path, tmp_path, file_name, data_key):
     # Modify the data path to the sciCORE job temp dir
     data_path = tmp_path
     fd_path = os.path.join(tmp_path, "fd")
-    save_path = tmp_path
     print("data: %s \n fd: %s" % (data_path, fd_path))
 
     ops["batch_size"] = 4000
@@ -47,14 +46,14 @@ def update_paths(ops_path, db_path, tmp_path, file_name, data_key):
     db["h5py"] = file_name
     db["h5py_key"] = data_key
     db["fast_disk"] = fd_path
-    #db["save_folder"] = "/scicore/home/donafl00/yamauc0000/s2p_multisession"
+    # db["save_folder"] = "/scicore/home/donafl00/yamauc0000/s2p_multisession"
     print(db)
 
     return ops, db
 
 
 def main():
-    ops_path, db_path, tmp_path, file_name, data_key  = parse_args()
+    ops_path, db_path, tmp_path, file_name, data_key = parse_args()
     ops, db = update_paths(ops_path, db_path, tmp_path, file_name, data_key)
 
     # save the files
@@ -66,4 +65,4 @@ def main():
 
     # run the pipeline
     ops_end = run_s2p(ops=ops, db=db)
-    np.save('ops_end.npy', ops_end)
+    np.save("ops_end.npy", ops_end)
