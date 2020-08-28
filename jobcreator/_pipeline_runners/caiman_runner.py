@@ -102,7 +102,7 @@ def run(
         qc_parameters[k] = v
 
     # get the filenames
-    file_pattern = os.path.join(file_path, "*.tif")
+    file_pattern = os.path.join(file_path, "*.tif*")
     fnames = glob.glob(file_pattern)
     print(fnames)
     mc_parameters["fnames"] = fnames
