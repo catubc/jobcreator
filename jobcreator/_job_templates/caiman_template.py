@@ -93,6 +93,11 @@ def caiman_job_file_fmi(
     cnmf_settings_file: str = "default",
     qc_settings_file: str = "default",
 ):
+
+    # make sure the output directory is different from the data directory
+    if os.path.samefile(data_path, jobcreator_output_dir):
+        raise ValueError("data_path and output directory should not be the same")
+
     mem_per_cpu = str(mem_per_cpu) + "G"
     tmp_size = str(tmp_size) + "G"
 
