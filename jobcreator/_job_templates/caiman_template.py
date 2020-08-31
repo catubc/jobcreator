@@ -96,6 +96,9 @@ def caiman_job_file_fmi(
     mem_per_cpu = str(mem_per_cpu) + "G"
     tmp_size = str(tmp_size) + "G"
 
+    # get the name of the file and make the path to the temp dir
+    data_pattern = os.path.join(data_path, "*.tif*")
+
     # save the error and log files to the results dir
     log_file = os.path.join(jobcreator_output_dir, log_file)
     error_file = os.path.join(jobcreator_output_dir, error_file)
