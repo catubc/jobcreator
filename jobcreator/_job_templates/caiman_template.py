@@ -130,11 +130,14 @@ source /tungstenfs/scratch/garber/caiman/.venv/bin/activate
 echo "saving environment information"
 pip freeze {env_file_stub}%j.yml
 
-echo "analysis"
-caiman_runner --file {data_path} --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file}
+# move the files
+for file in {data_pattern}; do cp "$file" {jobcreator_output_dir};done
 
-# exit the venv
-deactivate
+echo "analysis"
+caiman_runner --file {jobcreator_output_dir} --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file}
+
+# remove the copied raw movies
+rm {jobcreator_output_dir}/*.tif*
 """
 
     return job_file
