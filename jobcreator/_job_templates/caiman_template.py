@@ -133,7 +133,7 @@ export OPENBLAS_NUM_THREADS=1
 export VECLIB_MAXIMUM_THREADS=1
 
 echo "loading env"
-source /tungstenfs/scratch/garber/caiman/.venv/bin/activate
+source /tungstenfs/scratch/garber/keviny/caiman_test/.venv/bin/activate
 
 echo "saving environment information"
 pip freeze {env_file_stub}%j.yml
