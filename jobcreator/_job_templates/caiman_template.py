@@ -136,7 +136,8 @@ echo "loading env"
 source /tungstenfs/scratch/garber/keviny/caiman_test/.venv/bin/activate
 
 echo "saving environment information"
-pip freeze > "{env_file_stub} $SLURM_JOB_ID .txt"
+env_file_extension = ".txt
+pip freeze > "{env_file_stub}$SLURM_JOB_ID$env_file_extension"
 
 # move the files
 for file in {data_pattern}; do cp "$file" {jobcreator_output_dir};done
