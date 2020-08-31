@@ -136,7 +136,7 @@ echo "loading env"
 source /tungstenfs/scratch/garber/keviny/caiman_test/.venv/bin/activate
 
 echo "saving environment information"
-env_file_extension = ".txt
+env_file_extension="_env.txt"
 pip freeze > "{env_file_stub}$SLURM_JOB_ID$env_file_extension"
 
 # move the files
