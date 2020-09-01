@@ -11,8 +11,10 @@ import numpy as np
 
 from ..utils.misc import get_settings
 
-f = "%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s]"
-"[%(process)d] %(message)s"
+f = (
+    "%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s]"
+    "[%(process)d] %(message)s"
+)
 logging.basicConfig(
     format=f, filename="caiman.log", filemode="w", level=logging.DEBUG,
 )
