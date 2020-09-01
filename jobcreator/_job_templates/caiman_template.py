@@ -52,6 +52,10 @@ def caiman_job_file(
 #The variable $HOME points to your home directory.
 #The variable $SLURM_JOBID stores the ID number of your job.
 
+# set environment variables
+export MKL_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export VECLIB_MAXIMUM_THREADS=1
 
 #load your required modules below
 #################################
