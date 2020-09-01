@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+import logging
 import glob
 import os
 import pickle
@@ -8,6 +9,12 @@ from time import sleep
 import numpy as np
 
 from ..utils.misc import get_settings
+
+f = "%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s]"
+"[%(process)d] %(message)s"
+logging.basicConfig(
+    format=f, filename="caiman.log", filemode="w", level=logging.DEBUG,
+)
 
 DEFAULT_MCORR_SETTINGS = {
     "fr": 10,  # movie frame rate
