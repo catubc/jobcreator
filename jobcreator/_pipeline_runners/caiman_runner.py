@@ -4,6 +4,7 @@ import logging
 import glob
 import os
 import pickle
+import sys
 from time import sleep
 
 import numpy as np
@@ -90,6 +91,12 @@ def run(
     cnmf_settings: dict = {},
     qc_settings: dict = {},
 ):
+    mkl = os.environ.get("MKL_NUM_THREADS")
+    blas = os.environ.get("OPENBLAS_NUM_THREADS")
+    vec = os.environ.get("VECLIB_MAXIMUM_THREADS")
+    print(f"MKL: {mkl}")
+    print(f"blas: {blas}")
+    print(f"vec: {vec}")
 
     # we import the pipeline upon running so they aren't required for all installs
     import caiman as cm
@@ -119,14 +126,15 @@ def run(
     print("starting server")
     # start the server
 
-    # n_processes = n_cpus - 1
+    n_proc = np.max([(n_cpus - 1), 1])
     c, dview, n_processes = cm.cluster.setup_cluster(
-        backend="local", n_processes=None, single_thread=False
+        backend="local", n_processes=n_proc, single_thread=False
     )
     print(n_processes)
     sleep(30)
 
     print("motion corr")
+    sys.stdout.flush()
     pw_rigid = mc_parameters["pw_rigid"]
     mc = MotionCorrect(fnames, dview=dview, **opts.get_group("motion"))
     mc.motion_correct(save_movie=True)
@@ -139,10 +147,15 @@ def run(
         )
 
     print("writing mmap")
+    sys.stdout.flush()
     bord_px = 0
     fname_new = cm.save_memmap(
         fname_mc, base_name="memmap_", order="C", border_to_0=bord_px
     )
+
+    print("stopping server")
+    sys.stdout.flush()
+    cm.stop_server(dview=dview)
 
     # load mmap
     print("loading mmap")
@@ -154,14 +167,27 @@ def run(
     # Don't seed with predetermined binary masks
     Ain = None
 
+    # starting server
+    print("starting server")
+    sys.stdout.flush()
+    c, dview, n_processes = cm.cluster.setup_cluster(
+        backend="local", n_processes=n_proc, single_thread=False
+    )
+    print(n_processes)
+    sleep(30)
+
     opts.change_params(
         params_dict=cnmf_parameters
     )  # number of pixels to not consider in the borders)
 
+    # starting server
+    print("cnmf")
+    sys.stdout.flush()
     cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=Ain, params=opts)
     cnm.fit(images)
 
     print("evaluate components")
+    sys.stdout.flush()
     cnm.params.set("quality", qc_parameters)
     cnm.estimates.evaluate_components(images, cnm.params, dview=dview)
 
