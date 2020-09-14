@@ -3,10 +3,14 @@ import json
 import os
 import subprocess
 
-from ._job_templates import suite2p_job_file, caiman_job_file
+from ._job_templates import suite2p_job_file, caiman_job_file_bz, caiman_job_file_fmi
 from ._pipeline_checks import check_caiman
 
-JOB_FILE_GENERATORS = {"suite2p": suite2p_job_file, "caiman": caiman_job_file}
+JOB_FILE_GENERATORS = {
+    "suite2p": suite2p_job_file,
+    "caiman": caiman_job_file_bz,
+    "caiman-fmi": caiman_job_file_fmi,
+}
 PIPELINE_CHECKERS = {"caiman": check_caiman}
 
 
@@ -37,6 +41,8 @@ def main():
         # make the output directory if it doesn't exist
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
+        else:
+            raise ValueError("output must be saved to a new directory")
 
         job_file_path = os.path.join(output_dir, "job_file.sh")
 
