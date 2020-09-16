@@ -13,6 +13,7 @@ def caiman_job_file_bz(
     qos: str = "6hours",
     log_file: str = "myrun.o",
     error_file: str = "myrun.e",
+    motion_correct: bool = True,
     mc_settings_file: str = "default",
     cnmf_settings_file: str = "default",
     qc_settings_file: str = "default",
@@ -22,6 +23,12 @@ def caiman_job_file_bz(
 
     # get the name of the file and make the path to the temp dir
     data_pattern = os.path.join(data_path, "*.tif*")
+
+    # create the flag for motion correction
+    if motion_correct:
+        mcorr_flag = "--motion_corr"
+    else:
+        mcorr_flag = ""
 
     # save the error and log files to the results dir
     log_file = os.path.join(jobcreator_output_dir, log_file)
@@ -71,7 +78,7 @@ echo "analysis"
 source activate caiman
 conda env export > {env_file_stub}$SLURM_JOBID_env.yml
 
-caiman_runner --file $TMP --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file}
+caiman_runner --file $TMP --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file} {mcorr_flag}
 
 for file in $TMP/*.mmap; do cp "$file" {jobcreator_output_dir};done
 for file in $TMP/*.hdf5; do cp "$file" {jobcreator_output_dir};done
@@ -93,6 +100,7 @@ def caiman_job_file_fmi(
     qos: str = "cpu_short",
     log_file: str = "myrun.o",
     error_file: str = "myrun.e",
+    motion_correct: bool = True,
     mc_settings_file: str = "default",
     cnmf_settings_file: str = "default",
     qc_settings_file: str = "default",
@@ -107,6 +115,12 @@ def caiman_job_file_fmi(
 
     # get the name of the file and make the path to the temp dir
     data_pattern = os.path.join(data_path, "*.tif*")
+
+    # create the flag for motion correction
+    if motion_correct:
+        mcorr_flag = "--motion_corr"
+    else:
+        mcorr_flag = ""
 
     # save the error and log files to the results dir
     log_file = os.path.join(jobcreator_output_dir, log_file)
@@ -147,7 +161,7 @@ pip freeze > "{env_file_stub}$SLURM_JOB_ID$env_file_extension"
 for file in {data_pattern}; do cp "$file" {jobcreator_output_dir};done
 
 echo "analysis"
-caiman_runner --file {jobcreator_output_dir} --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file}
+caiman_runner --file {jobcreator_output_dir} --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file} {mcorr_flag}
 
 # remove the copied raw movies
 rm {jobcreator_output_dir}/*.tif*

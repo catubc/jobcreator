@@ -72,6 +72,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Suite2p parameters")
     parser.add_argument("--file", default=[], type=str, help="options")
     parser.add_argument("--ncpus", default=1, type=int, help="options")
+    parser.add_argument("--motion_corr", action="store_true")
     parser.add_argument("--mc_settings", default="", type=str, help="options")
     parser.add_argument("--cnmf_settings", default="", type=str, help="options")
     parser.add_argument("--qc_settings", default="", type=str, help="options")
@@ -79,16 +80,18 @@ def parse_args():
 
     file_path = args.file
     n_cpus = args.ncpus
+    motion_correct = args.motion_corr
     mc_settings = args.mc_settings
     cnmf_settings = args.cnmf_settings
     qc_settings = args.qc_settings
 
-    return file_path, n_cpus, mc_settings, cnmf_settings, qc_settings
+    return file_path, n_cpus, motion_correct, mc_settings, cnmf_settings, qc_settings
 
 
 def run(
     file_path,
     n_cpus,
+    motion_correct: bool = True,
     mc_settings: dict = {},
     cnmf_settings: dict = {},
     qc_settings: dict = {},
@@ -124,40 +127,47 @@ def run(
     mc_parameters["fnames"] = fnames
 
     opts = params.CNMFParams(params_dict=mc_parameters)
-
-    print("starting server")
-    # start the server
-
     n_proc = np.max([(n_cpus - 1), 1])
-    c, dview, n_processes = cm.cluster.setup_cluster(
-        backend="local", n_processes=n_proc, single_thread=False
-    )
-    print(n_processes)
-    sleep(30)
 
-    print("motion corr")
-    sys.stdout.flush()
-    pw_rigid = mc_parameters["pw_rigid"]
-    mc = MotionCorrect(fnames, dview=dview, **opts.get_group("motion"))
-    mc.motion_correct(save_movie=True)
-    fname_mc = mc.fname_tot_els if pw_rigid else mc.fname_tot_rig
-    if pw_rigid:
-        bord_px = np.ceil(
-            np.maximum(
-                np.max(np.abs(mc.x_shifts_els)), np.max(np.abs(mc.y_shifts_els))
-            ).astype(np.int)
+    if motion_correct:
+        print("starting server")
+        # start the server
+        c, dview, n_processes = cm.cluster.setup_cluster(
+            backend="local", n_processes=n_proc, single_thread=False
+        )
+        print(n_processes)
+        sleep(30)
+
+        print("motion corr")
+        sys.stdout.flush()
+        pw_rigid = mc_parameters["pw_rigid"]
+        mc = MotionCorrect(fnames, dview=dview, **opts.get_group("motion"))
+        mc.motion_correct(save_movie=True)
+        fname_mc = mc.fname_tot_els if pw_rigid else mc.fname_tot_rig
+        if pw_rigid:
+            bord_px = np.ceil(
+                np.maximum(
+                    np.max(np.abs(mc.x_shifts_els)), np.max(np.abs(mc.y_shifts_els))
+                ).astype(np.int)
+            )
+        else:
+            bord_px = 0
+
+        print("writing mmap")
+        sys.stdout.flush()
+
+        fname_new = cm.save_memmap(
+            fname_mc, base_name="memmap_", order="C", border_to_0=bord_px
         )
 
-    print("writing mmap")
-    sys.stdout.flush()
-    bord_px = 0
-    fname_new = cm.save_memmap(
-        fname_mc, base_name="memmap_", order="C", border_to_0=bord_px
-    )
-
-    print("stopping server")
-    sys.stdout.flush()
-    cm.stop_server(dview=dview)
+        print("stopping server")
+        sys.stdout.flush()
+        cm.stop_server(dview=dview)
+    else:
+        print("skipping mcorr")
+        print("writing mmap")
+        sys.stdout.flush()
+        fname_new = cm.save_memmap(fnames, base_name="memmap_", order="C")
 
     # load mmap
     print("loading mmap")
@@ -211,6 +221,7 @@ def main():
     (
         file_path,
         n_cpus,
+        motion_correct,
         mc_settings_path,
         cnmf_settings_path,
         qc_settings_path,
@@ -224,6 +235,7 @@ def main():
     run(
         file_path=file_path,
         n_cpus=n_cpus,
+        motion_correct=motion_correct,
         mc_settings=mc_settings,
         cnmf_settings=cnmf_settings,
         qc_settings=qc_settings,
