@@ -92,7 +92,7 @@ def run(
     file_path,
     n_cpus,
     motion_correct: bool = True,
-    quality_control: bool = True,
+    quality_control: bool = False,
     mc_settings: dict = {},
     cnmf_settings: dict = {},
     qc_settings: dict = {},
@@ -130,6 +130,7 @@ def run(
 
     # get the filenames
     if os.path.isfile(file_path):
+        print(file_path)
         fnames = [file_path]
     else:
         file_pattern = os.path.join(file_path, "*.tif*")
@@ -160,8 +161,21 @@ def run(
         motion_correct=motion_correct, include_eval=quality_control
     )
 
+    print("evaluate components")
+    sys.stdout.flush()
+    Yr, dims, T = cm.load_memmap(cnm_results.mmap_file)
+    images = Yr.T.reshape((T,) + dims, order="F")
+    cnm_results.estimates.evaluate_components(images, cnm.params, dview=dview)
+    print('Number of total components: ', len(cnm_results.estimates.C))
+    print('Number of accepted components: ', len(cnm_results.estimates.idx_components))
+
+
+    # save the results object
+    print("saving results")
+    cnm_results.save(cnm_results.mmap_file[:-4] + "hdf5")
+
     # save the parameters in the same dir as the results
-    final_params = cnm_results.params.to_dict()
+    final_params = cnm.params.to_dict()
     path_base = os.path.dirname(cnm_results.mmap_file)
     params_file = os.path.join(path_base, "all_caiman_parameters.pkl")
     with open(params_file, "wb") as fp:
