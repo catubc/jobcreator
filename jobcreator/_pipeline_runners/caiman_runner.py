@@ -111,7 +111,7 @@ def run(
 
     # print the directory caiman is imported from
     caiman_path = os.path.abspath(cm.__file__)
-    print(f'caiman path: {caiman_path}')
+    print(f"caiman path: {caiman_path}")
     sys.stdout.flush()
 
     # load and update the pipeline settings
@@ -135,7 +135,7 @@ def run(
         file_pattern = os.path.join(file_path, "*.tif*")
         fnames = glob.glob(file_pattern)
     print(fnames)
-    opts.set('data', {'fnames': fnames})
+    opts.set("data", {"fnames": fnames})
 
     if n_cpus > 1:
         print("starting server")
@@ -147,16 +147,18 @@ def run(
         print(n_processes)
         sleep(30)
     else:
-        print('multiprocessing disabled')
+        print("multiprocessing disabled")
         dview = None
         n_processes = 1
 
-    print('starting analysis')
-    print(f'perform motion correction: {motion_correct}')
-    print(f'perform qc: {quality_control}')
+    print("starting analysis")
+    print(f"perform motion correction: {motion_correct}")
+    print(f"perform qc: {quality_control}")
     sys.stdout.flush()
     cnm = cnmf.CNMF(n_processes, params=opts, dview=dview)
-    cnm_results = cnm.fit_file(motion_correct=motion_correct, include_eval=quality_control)
+    cnm_results = cnm.fit_file(
+        motion_correct=motion_correct, include_eval=quality_control
+    )
 
     # save the parameters in the same dir as the results
     final_params = cnm_results.params.to_dict()
