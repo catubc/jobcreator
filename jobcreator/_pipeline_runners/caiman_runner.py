@@ -166,9 +166,8 @@ def run(
     Yr, dims, T = cm.load_memmap(cnm_results.mmap_file)
     images = Yr.T.reshape((T,) + dims, order="F")
     cnm_results.estimates.evaluate_components(images, cnm.params, dview=dview)
-    print('Number of total components: ', len(cnm_results.estimates.C))
-    print('Number of accepted components: ', len(cnm_results.estimates.idx_components))
-
+    print("Number of total components: ", len(cnm_results.estimates.C))
+    print("Number of accepted components: ", len(cnm_results.estimates.idx_components))
 
     # save the results object
     print("saving results")
