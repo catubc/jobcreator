@@ -11,12 +11,9 @@ import numpy as np
 
 from ..utils.misc import get_settings
 
-f = (
+LOGGER_FORMAT = (
     "%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s]"
     "[%(process)d] %(message)s"
-)
-logging.basicConfig(
-    format=f, filename="caiman.log", filemode="w", level=logging.DEBUG,
 )
 
 DEFAULT_MCORR_SETTINGS = {
@@ -76,6 +73,7 @@ def parse_args():
     parser.add_argument("--mc_settings", default="", type=str, help="options")
     parser.add_argument("--cnmf_settings", default="", type=str, help="options")
     parser.add_argument("--qc_settings", default="", type=str, help="options")
+    parser.add_argument("--output", default="", type=str, help="options")
     args = parser.parse_args()
 
     file_path = args.file
@@ -84,8 +82,17 @@ def parse_args():
     mc_settings = args.mc_settings
     cnmf_settings = args.cnmf_settings
     qc_settings = args.qc_settings
+    output_dir = args.output
 
-    return file_path, n_cpus, motion_correct, mc_settings, cnmf_settings, qc_settings
+    return (
+        file_path,
+        n_cpus,
+        motion_correct,
+        mc_settings,
+        cnmf_settings,
+        qc_settings,
+        output_dir,
+    )
 
 
 def run(
@@ -96,6 +103,7 @@ def run(
     mc_settings: dict = {},
     cnmf_settings: dict = {},
     qc_settings: dict = {},
+    output_directory: str = "",
 ):
     mkl = os.environ.get("MKL_NUM_THREADS")
     blas = os.environ.get("OPENBLAS_NUM_THREADS")
@@ -113,6 +121,12 @@ def run(
     caiman_path = os.path.abspath(cm.__file__)
     print(f"caiman path: {caiman_path}")
     sys.stdout.flush()
+
+    # setup the logger
+    logger_file = os.path.join(output_directory, "caiman.log")
+    logging.basicConfig(
+        format=LOGGER_FORMAT, filename=logger_file, filemode="w", level=logging.DEBUG,
+    )
 
     # load and update the pipeline settings
     mc_parameters = DEFAULT_MCORR_SETTINGS
@@ -192,6 +206,7 @@ def main():
         mc_settings_path,
         cnmf_settings_path,
         qc_settings_path,
+        output_dir,
     ) = parse_args()
 
     mc_settings = get_settings(mc_settings_path)
@@ -206,4 +221,5 @@ def main():
         mc_settings=mc_settings,
         cnmf_settings=cnmf_settings,
         qc_settings=qc_settings,
+        output_directory=output_dir,
     )
