@@ -192,7 +192,7 @@ def run(
     # downstream
     if motion_correct:
         print("saving motion corrected file")
-        filename_base = os.path.splittext(cnm_results.mmap_file)[0]
+        filename_base = os.path.splitext(cnm_results.mmap_file)[0]
         mcorr_fname = filename_base + "_mcorr.hdf5"
         dataset_name = cnm_results.params.data["var_name_hdf5"]
         fnames = cnm_results.params.data["fnames"]
