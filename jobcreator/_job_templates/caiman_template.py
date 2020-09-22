@@ -81,7 +81,6 @@ conda env export > {env_file_stub}$SLURM_JOBID_env.yml
 
 caiman_runner --file $TMP --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file} --output {jobcreator_output_dir} {mcorr_flag}
 
-for file in $TMP/*.mmap; do cp "$file" {jobcreator_output_dir};done
 for file in $TMP/*.hdf5; do cp "$file" {jobcreator_output_dir};done
 for file in $TMP/*.pkl; do cp "$file" {jobcreator_output_dir};done
 """

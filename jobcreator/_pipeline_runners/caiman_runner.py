@@ -187,24 +187,31 @@ def run(
     print("saving results")
     cnm_results.save(cnm_results.mmap_file[:-4] + "hdf5")
 
-    print("saving motion corrected file")
-    mcorr_fname = cnm_results.mmap_file[:-5] + "_mcorr.hdf5"
-    dataset_name = cnm_results.params.data["var_name_hdf5"]
-    fnames = cnm_results.params.data["fnames"]
-    memmap_files = []
-    for f in fnames:
-        base_file = os.path.splitext(f.decode())[0]
-        if cnm_results.params.motion["pw_rigid"]:
-            memmap_pattern = base_file + "*_els_*"
-        else:
-            memmap_pattern = base_file + "*_rig_*"
-        memmap_files += glob.glob(memmap_pattern)
-    write_hdf5_movie(
-        movie_name=mcorr_fname,
-        memmap_files=memmap_files,
-        frame_shape=cnm_results.dims,
-        dataset_name=dataset_name,
-    )
+    # if motion correction was performed, save the file
+    # we save as hdf5 for better reading performance
+    # downstream
+    if motion_correct:
+        print("saving motion corrected file")
+        filename_base = os.path.splittext(cnm_results.mmap_file)[0]
+        mcorr_fname = filename_base + "_mcorr.hdf5"
+        dataset_name = cnm_results.params.data["var_name_hdf5"]
+        fnames = cnm_results.params.data["fnames"]
+        memmap_files = []
+        for f in fnames:
+            if isinstance(f, bytes):
+                f = f.decode()
+            base_file = os.path.splitext(f)[0]
+            if cnm_results.params.motion["pw_rigid"]:
+                memmap_pattern = base_file + "*_els_*"
+            else:
+                memmap_pattern = base_file + "*_rig_*"
+            memmap_files += glob.glob(memmap_pattern)
+        write_hdf5_movie(
+            movie_name=mcorr_fname,
+            memmap_files=memmap_files,
+            frame_shape=cnm_results.dims,
+            dataset_name=dataset_name,
+        )
 
     # save the parameters in the same dir as the results
     final_params = cnm.params.to_dict()
