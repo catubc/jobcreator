@@ -163,8 +163,9 @@ for file in {data_pattern}; do cp "$file" {jobcreator_output_dir};done
 echo "analysis"
 caiman_runner --file {jobcreator_output_dir} --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file} --output {jobcreator_output_dir} {mcorr_flag}
 
-# remove the copied raw movies
+# remove the copied raw movies and memmap files
 rm {jobcreator_output_dir}/*.tif*
+rm {jobcreator_output_dir}/*.mmap
 """
 
     return job_file
