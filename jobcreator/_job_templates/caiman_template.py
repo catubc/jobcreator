@@ -10,6 +10,7 @@ def caiman_job_file_bz(
     mem_per_cpu: int = 25,
     tmp_size: int = 150,
     job_time: str = "04:00:00",
+    environment: str = "caiman",
     qos: str = "6hours",
     log_file: str = "myrun.o",
     error_file: str = "myrun.e",
@@ -76,7 +77,7 @@ echo "moving files"
 for file in {data_pattern}; do cp "$file" $TMP;done
 
 echo "analysis"
-source activate caiman
+source activate {environment}
 conda env export > {env_file_stub}$SLURM_JOBID_env.yml
 
 caiman_runner --file $TMP --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file} --output {jobcreator_output_dir} {mcorr_flag}
@@ -97,6 +98,7 @@ def caiman_job_file_fmi(
     mem_per_cpu: int = 25,
     tmp_size: int = 150,
     job_time: str = "04:00:00",
+    environment: str = "",
     qos: str = "cpu_short",
     log_file: str = "myrun.o",
     error_file: str = "myrun.e",
@@ -111,7 +113,10 @@ def caiman_job_file_fmi(
         raise ValueError("data_path and output directory should not be the same")
 
     mem_per_cpu = str(mem_per_cpu) + "G"
-    tmp_size = str(tmp_size) + "G"
+
+    # set the default environment name if none specified
+    if environment == "":
+        environment = "/tungstenfs/scratch/garber/keviny/caiman_test/.venv/bin/activate"
 
     # get the name of the file and make the path to the temp dir
     data_pattern = os.path.join(data_path, "*.tif*")
@@ -151,7 +156,7 @@ export OPENBLAS_NUM_THREADS=1
 export VECLIB_MAXIMUM_THREADS=1
 
 echo "loading env"
-source /tungstenfs/scratch/garber/keviny/caiman_test/.venv/bin/activate
+source {environment}
 
 echo "saving environment information"
 env_file_extension="_env.txt"
