@@ -215,6 +215,7 @@ def run(
             memmap_files=memmap_files,
             frame_shape=cnm_results.dims,
             dataset_name=dataset_name,
+            compression='gzip',
         )
 
     # save the parameters in the same dir as the results
