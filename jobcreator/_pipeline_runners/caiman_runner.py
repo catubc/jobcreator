@@ -73,6 +73,7 @@ def parse_args():
     parser.add_argument("--mc_settings", default="", type=str, help="options")
     parser.add_argument("--cnmf_settings", default="", type=str, help="options")
     parser.add_argument("--qc_settings", default="", type=str, help="options")
+    parser.add_argument("--job_name", default="", type=str, help="options")
     parser.add_argument("--output", default="", type=str, help="options")
     args = parser.parse_args()
 
@@ -82,6 +83,7 @@ def parse_args():
     mc_settings = args.mc_settings
     cnmf_settings = args.cnmf_settings
     qc_settings = args.qc_settings
+    job_name = args.job_name
     output_dir = args.output
 
     return (
@@ -91,6 +93,7 @@ def parse_args():
         mc_settings,
         cnmf_settings,
         qc_settings,
+        job_name,
         output_dir,
     )
 
@@ -103,6 +106,7 @@ def run(
     mc_settings: dict = {},
     cnmf_settings: dict = {},
     qc_settings: dict = {},
+    job_name: str = "job",
     output_directory: str = "",
 ):
     mkl = os.environ.get("MKL_NUM_THREADS")
@@ -148,7 +152,7 @@ def run(
         fnames = [file_path]
     else:
         file_pattern = os.path.join(file_path, "*.tif*")
-        fnames = glob.glob(file_pattern)
+        fnames = glob.glob(file_pattern).sort()
     print(fnames)
     opts.set("data", {"fnames": fnames})
 
@@ -185,15 +189,15 @@ def run(
 
     # save the results object
     print("saving results")
-    cnm_results.save(cnm_results.mmap_file[:-4] + "hdf5")
+    results_filebase = os.path.join(output_directory, job_name)
+    cnm_results.save(results_filebase + ".hdf5")
 
     # if motion correction was performed, save the file
     # we save as hdf5 for better reading performance
     # downstream
     if motion_correct:
         print("saving motion corrected file")
-        filename_base = os.path.splitext(cnm_results.mmap_file)[0]
-        mcorr_fname = filename_base + "_mcorr.hdf5"
+        mcorr_fname = results_filebase + "_mcorr.hdf5"
         dataset_name = cnm_results.params.data["var_name_hdf5"]
         fnames = cnm_results.params.data["fnames"]
         memmap_files = []
@@ -205,7 +209,7 @@ def run(
                 memmap_pattern = base_file + "*_els_*"
             else:
                 memmap_pattern = base_file + "*_rig_*"
-            memmap_files += glob.glob(memmap_pattern)
+            memmap_files += glob.glob(memmap_pattern).sort()
         write_hdf5_movie(
             movie_name=mcorr_fname,
             memmap_files=memmap_files,
@@ -215,8 +219,7 @@ def run(
 
     # save the parameters in the same dir as the results
     final_params = cnm.params.to_dict()
-    path_base = os.path.dirname(cnm_results.mmap_file)
-    params_file = os.path.join(path_base, "all_caiman_parameters.pkl")
+    params_file = os.path.join(output_directory, "all_caiman_parameters.pkl")
     with open(params_file, "wb") as fp:
         pickle.dump(final_params, fp)
 
@@ -232,6 +235,7 @@ def main():
         mc_settings_path,
         cnmf_settings_path,
         qc_settings_path,
+        job_name,
         output_dir,
     ) = parse_args()
 
@@ -247,5 +251,6 @@ def main():
         mc_settings=mc_settings,
         cnmf_settings=cnmf_settings,
         qc_settings=qc_settings,
+        job_name=job_name,
         output_directory=output_dir,
     )
