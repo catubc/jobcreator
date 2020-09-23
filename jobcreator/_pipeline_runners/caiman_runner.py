@@ -152,7 +152,7 @@ def run(
         fnames = [file_path]
     else:
         file_pattern = os.path.join(file_path, "*.tif*")
-        fnames = glob.glob(file_pattern).sort()
+        fnames = sorted(glob.glob(file_pattern))
     print(fnames)
     opts.set("data", {"fnames": fnames})
 
@@ -209,7 +209,7 @@ def run(
                 memmap_pattern = base_file + "*_els_*"
             else:
                 memmap_pattern = base_file + "*_rig_*"
-            memmap_files += glob.glob(memmap_pattern).sort()
+            memmap_files += sorted(glob.glob(memmap_pattern))
         write_hdf5_movie(
             movie_name=mcorr_fname,
             memmap_files=memmap_files,
