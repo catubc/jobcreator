@@ -80,10 +80,8 @@ echo "analysis"
 source activate {environment}
 conda env export > {env_file_stub}$SLURM_JOBID_env.yml
 
-caiman_runner --file $TMP --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file} --output {jobcreator_output_dir} {mcorr_flag}
+caiman_runner --file $TMP --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file} --output {jobcreator_output_dir} --job_name {job_name} {mcorr_flag}
 
-for file in $TMP/*.hdf5; do cp "$file" {jobcreator_output_dir};done
-for file in $TMP/*.pkl; do cp "$file" {jobcreator_output_dir};done
 """
 
     return job_file
@@ -166,7 +164,7 @@ pip freeze > "{env_file_stub}$SLURM_JOB_ID$env_file_extension"
 for file in {data_pattern}; do cp "$file" {jobcreator_output_dir};done
 
 echo "analysis"
-caiman_runner --file {jobcreator_output_dir} --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file} --output {jobcreator_output_dir} {mcorr_flag}
+caiman_runner --file {jobcreator_output_dir} --ncpus {n_cpu} --mc_settings {mc_settings_file} --cnmf_settings {cnmf_settings_file} --qc_settings {qc_settings_file} --output {jobcreator_output_dir} --job_name {job_name} {mcorr_flag}
 
 # remove the copied raw movies and memmap files
 rm {jobcreator_output_dir}/*.tif*
