@@ -3,13 +3,19 @@ import json
 import os
 import subprocess
 
-from ._job_templates import suite2p_job_file, caiman_job_file_bz, caiman_job_file_fmi
+from ._job_templates import (
+    suite2p_job_file,
+    caiman_job_file_bz,
+    caiman_job_file_fmi,
+    caiman_mcorr_job_fmi,
+)
 from ._pipeline_checks import check_caiman
 
 JOB_FILE_GENERATORS = {
     "suite2p": suite2p_job_file,
     "caiman": caiman_job_file_bz,
     "caiman-fmi": caiman_job_file_fmi,
+    "caiman-mcorr-fmi": caiman_mcorr_job_fmi,
 }
 PIPELINE_CHECKERS = {"caiman": check_caiman}
 
