@@ -156,7 +156,7 @@ def run(
             memmap_files = mc.fname_tot_rig
 
         # get the frame shape
-        mov = cm.read(memmap_files[0])
+        mov = cm.load(memmap_files[0])
         frame_shape = mov.shape[-2::]
 
         write_hdf5_movie(
