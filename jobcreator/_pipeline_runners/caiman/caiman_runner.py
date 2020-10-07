@@ -85,6 +85,20 @@ def run(
         format=LOGGER_FORMAT, filename=logger_file, filemode="w", level=logging.DEBUG,
     )
 
+    # if indices to perform mcorr are set, format them
+    if "indices" in mc_settings:
+        indices = mc_settings["indices"]
+
+        indices_formatted = ()
+        for axis_slice in indices:
+            start = axis_slice[0]
+            stop = axis_slice[1]
+            if len(axis_slice) == 3:
+                step = axis_slice[2]
+            else:
+                step = 1
+            indices_formatted += (slice(start, stop, step),)
+        mc_settings["indices"] = indices_formatted
     # load and update the pipeline settings
     mc_parameters = DEFAULT_MCORR_SETTINGS
     for k, v in mc_settings.items():
