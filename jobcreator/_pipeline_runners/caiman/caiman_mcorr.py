@@ -80,7 +80,7 @@ def run(
                 step = axis_slice[2]
             else:
                 step = 1
-            indices_formatted += slice(start, stop, step)
+            indices_formatted += (slice(start, stop, step),)
         mc_settings["indices"] = indices_formatted
     # load and update the pipeline settings
     mc_parameters = DEFAULT_MCORR_SETTINGS
