@@ -20,6 +20,7 @@ setup(
     entry_points={
         "console_scripts": [
             "jobcreator=jobcreator.__main__:main",
+            "jobcreator-desktop=jobcreator.__main__:desktop_runner",
             "suite2p_runner=jobcreator._pipeline_runners.suite2p.suite2p_runner:main",
             "caiman_runner=jobcreator._pipeline_runners.caiman.caiman_runner:main",
             "caiman_mcorr_runner=jobcreator._pipeline_runners.caiman.caiman_mcorr:main",
