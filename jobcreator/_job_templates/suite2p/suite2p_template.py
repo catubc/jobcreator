@@ -55,8 +55,8 @@ def suite2p_job_file(
 
 #load your required modules below
 #################################
-module purge
-module load Anaconda3
+# module purge
+# module load Anaconda3
 
 #add your command lines below
 #############################
