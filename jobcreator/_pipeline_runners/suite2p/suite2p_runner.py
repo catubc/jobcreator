@@ -46,6 +46,10 @@ def update_paths(ops_path, db_path, tmp_path, file_name, data_key):
     db["h5py"] = file_name
     db["h5py_key"] = data_key
     db["fast_disk"] = fd_path
+
+    try:
+        db["use_builtin_classifier"] = False
+        db["classifier_path"] = '/scicore/home/donafl00/mitelu0000/test_analysis/cell_classifer.npy'
     # db["save_folder"] = "/scicore/home/donafl00/yamauc0000/s2p_multisession"
     print(db)
 
