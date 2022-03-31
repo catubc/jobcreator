@@ -66,7 +66,7 @@ val=$(ls $TMPDIR)
 echo $val
 echo $TMPDIR
 
-source activate suite2p
+source activate suite2p_cat
 conda env export > job_$SLURM_JOBID_env.yml
 suite2p_runner --tmp $TMPDIR --ops {ops_path} --db {db_path} --file {temp_data_path} --key {data_key}
 
